@@ -1,6 +1,7 @@
 package br.com.rodolfo.lancamento.api.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,15 @@ public class CategoriaServiceImpl implements CategoriaService {
         return this.categoriaRepository.findAll();
     }
 
+    @Override
+    public Optional<Categoria> listarPorId(Long id) {
 
-    
+        return this.categoriaRepository.findById(id);
+    }
+
+    @Override
+    public Categoria criar(Categoria categoria) {
+
+        return this.categoriaRepository.save(categoria);
+    }    
 }

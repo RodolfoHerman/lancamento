@@ -1,6 +1,7 @@
 package br.com.rodolfo.lancamento.api.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import br.com.rodolfo.lancamento.api.models.Categoria;
 
@@ -14,5 +15,19 @@ public interface CategoriaService {
      * @return List
      */
     List<Categoria> listar();
+
+    /**
+     * Busca e retorna uma categoria através do id
+     * @param id
+     * @return
+     */
+    Optional<Categoria> listarPorId(Long id);
+
+    /**
+     * Cria e retorna a categoria no banco de dados
+     * @param categoria
+     * @return Categoria
+     */
+    Categoria criar(Categoria categoria);
     
 }
