@@ -19,7 +19,7 @@ public interface CategoriaService {
     /**
      * Busca e retorna uma categoria através do id
      * @param id
-     * @return
+     * @return Optional
      */
     Optional<Categoria> listarPorId(Long id);
 
