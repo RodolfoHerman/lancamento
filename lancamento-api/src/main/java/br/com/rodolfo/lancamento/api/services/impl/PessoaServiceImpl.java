@@ -37,5 +37,9 @@ public class PessoaServiceImpl implements PessoaService {
         return this.pessoaRepository.save(pessoa);
     }
 
-    
+    @Override
+    public void deletarPorId(Long id) {
+
+        this.pessoaRepository.deleteById(id);
+    }
 }

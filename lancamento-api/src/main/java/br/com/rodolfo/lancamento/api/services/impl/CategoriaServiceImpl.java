@@ -35,5 +35,11 @@ public class CategoriaServiceImpl implements CategoriaService {
     public Categoria criar(Categoria categoria) {
 
         return this.categoriaRepository.save(categoria);
-    }    
+    }
+
+    @Override
+    public void deletarPorId(Long id) {
+
+        this.categoriaRepository.deleteById(id);
+    }
 }

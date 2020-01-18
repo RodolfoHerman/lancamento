@@ -30,4 +30,10 @@ public interface CategoriaService {
      */
     Categoria criar(Categoria categoria);
     
+    /**
+     * Deleta uma categoria através do id
+     * @param id
+     */
+    void deletarPorId(Long id);
+
 }

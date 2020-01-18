@@ -30,4 +30,10 @@ public interface PessoaService {
      */
     Pessoa criar(Pessoa pessoa);
     
+    /**
+     * Deleta uma pessoa através do id
+     * @param id
+     */
+    void deletarPorId(Long id);
+
 }
