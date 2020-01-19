@@ -1,9 +1,10 @@
 package br.com.rodolfo.lancamento.api.services.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.models.Lancamento;
@@ -27,9 +28,9 @@ public class LancamentoServiceImpl implements LancamentoService {
     private PessoaRepository pessoaRepository;
 
     @Override
-    public List<Lancamento> listar(LancamentoFilter lancamentoFilter) {
+    public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
         
-        return this.lancamentoRepository.filtrar(lancamentoFilter);
+        return this.lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
     @Override

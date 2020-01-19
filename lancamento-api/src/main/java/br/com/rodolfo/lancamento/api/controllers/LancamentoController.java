@@ -1,6 +1,5 @@
 package br.com.rodolfo.lancamento.api.controllers;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,12 +41,12 @@ public class LancamentoController {
     /**
      * Lista os lançamentos da base de dados
      * @param lancamentoFilter
-     * @return List
+     * @return Page
      */
     @GetMapping
-    public List<Lancamento> listar(LancamentoFilter lancamentoFilter) {
+    public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 
-        return this.lancamentoService.listar(lancamentoFilter);
+        return this.lancamentoService.listar(lancamentoFilter, pageable);
     }
 
     /**

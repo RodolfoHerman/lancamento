@@ -1,7 +1,9 @@
 package br.com.rodolfo.lancamento.api.services;
 
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
@@ -14,9 +16,10 @@ public interface LancamentoService {
     /**
      * Busca e retorna uma lista de lançamentos
      * @param lancamentoFilter
-     * @return List
+     * @param pageable
+     * @return Page
      */
-    List<Lancamento> listar(LancamentoFilter lancamentoFilter);
+    Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable);
     
     /**
      * Busca e retorna um lançamento través do id
