@@ -48,6 +48,23 @@ public class PessoaServiceImpl implements PessoaService {
     @Override
     public Pessoa atualizar(Long id, Pessoa pessoa) {
 
+        Pessoa pessoaSalva = this.buscarPessoaPeloId(id);
+
+        BeanUtils.copyProperties(pessoa, pessoaSalva, "id");
+        return this.pessoaRepository.save(pessoaSalva);
+    }
+
+    @Override
+    public void atualizarPropriedadeAtivo(Long id, Boolean ativo) {
+
+        Pessoa pessoa = this.buscarPessoaPeloId(id);
+
+        pessoa.setAtivo(ativo);
+        this.pessoaRepository.save(pessoa);
+    }
+
+    private Pessoa buscarPessoaPeloId(Long id) {
+
         Optional<Pessoa> pessoaSalva = this.pessoaRepository.findById(id);
 
         if(pessoaSalva.isEmpty()) {
@@ -55,7 +72,6 @@ public class PessoaServiceImpl implements PessoaService {
             throw new EmptyResultDataAccessException(1);
         }
 
-        BeanUtils.copyProperties(pessoa, pessoaSalva.get(), "id");
-        return this.pessoaRepository.save(pessoaSalva.get());
+        return pessoaSalva.get();
     }
 }

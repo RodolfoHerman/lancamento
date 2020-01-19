@@ -101,4 +101,16 @@ public class PessoaController {
         return ResponseEntity.ok().body(pessoaAtualizada);
     }
 
+    /**
+     * Atualizar a propriedade ativo da pessoa (atualização parcial)
+     * @param id
+     * @param ativo
+     */
+    @PutMapping("/{id}/ativo")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizarPropriedadeAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
+
+        this.pessoaService.atualizarPropriedadeAtivo(id, ativo);
+    }
+
 }

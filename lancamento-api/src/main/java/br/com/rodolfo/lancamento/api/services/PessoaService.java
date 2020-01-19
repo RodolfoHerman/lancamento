@@ -44,4 +44,11 @@ public interface PessoaService {
      */
     Pessoa atualizar(Long id, Pessoa pessoa);
 
+    /**
+     * Atualliza a propriedade ativo de pessoa (atualização parcial)
+     * @param id
+     * @param ativo
+     */
+    void atualizarPropriedadeAtivo(Long id, Boolean ativo);
+
 }
