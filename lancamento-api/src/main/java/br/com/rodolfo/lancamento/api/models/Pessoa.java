@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.models;
 
+import java.beans.Transient;
 import java.util.Objects;
 
 import javax.persistence.Embedded;
@@ -10,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Pessoa
@@ -49,8 +52,10 @@ public class Pessoa {
         this.nome = nome;
     }
 
-    public boolean isAtivo() {
-        return this.ativo;
+    @Transient
+    @JsonIgnore
+    public boolean isInativo() {
+        return !this.ativo;
     }
 
     public boolean getAtivo() {

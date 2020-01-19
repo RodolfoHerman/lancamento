@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
+
 /**
  * Captura as exceção das entidades (Entity)
  */
@@ -90,6 +92,17 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+
+    @ExceptionHandler({ PessoaInativaOuInexistenteException.class })
+    public ResponseEntity<Object> handlePessoaInativaOuInexistenteException(PessoaInativaOuInexistenteException ex, WebRequest request) {
+
+        String mensagemUsuario = this.messageSource.getMessage("pessoa.inativa-ou-inexistente", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
+
+        List<LancamentoErro> erros = Arrays.asList(new LancamentoErro(mensagemUsuario, mensagemDesenvolvedor));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
 
     private List<LancamentoErro> criarListaDeErros(BindingResult bindingResult) {
 
