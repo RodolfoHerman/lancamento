@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.rodolfo.lancamento.api.event.RecursoCriadoEvent;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
+import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
 
 /**
@@ -36,12 +37,13 @@ public class LancamentoController {
 
     /**
      * Lista os lançamentos da base de dados
+     * @param lancamentoFilter
      * @return List
      */
     @GetMapping
-    public List<Lancamento> listar() {
+    public List<Lancamento> listar(LancamentoFilter lancamentoFilter) {
 
-        return this.lancamentoService.listar();
+        return this.lancamentoService.listar(lancamentoFilter);
     }
 
     /**

@@ -10,6 +10,7 @@ import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
 import br.com.rodolfo.lancamento.api.repositories.LancamentoRepository;
 import br.com.rodolfo.lancamento.api.repositories.PessoaRepository;
+import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
 import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
 
@@ -26,9 +27,9 @@ public class LancamentoServiceImpl implements LancamentoService {
     private PessoaRepository pessoaRepository;
 
     @Override
-    public List<Lancamento> listar() {
+    public List<Lancamento> listar(LancamentoFilter lancamentoFilter) {
         
-        return this.lancamentoRepository.findAll();
+        return this.lancamentoRepository.filtrar(lancamentoFilter);
     }
 
     @Override

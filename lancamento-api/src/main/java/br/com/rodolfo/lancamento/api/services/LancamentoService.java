@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.com.rodolfo.lancamento.api.models.Lancamento;
+import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 
 /**
  * LancamentoService
@@ -12,9 +13,10 @@ public interface LancamentoService {
 
     /**
      * Busca e retorna uma lista de lançamentos
+     * @param lancamentoFilter
      * @return List
      */
-    List<Lancamento> listar();
+    List<Lancamento> listar(LancamentoFilter lancamentoFilter);
     
     /**
      * Busca e retorna um lançamento través do id
