@@ -3,7 +3,9 @@ package br.com.rodolfo.lancamento.api.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.models.Pessoa;
@@ -41,5 +43,19 @@ public class PessoaServiceImpl implements PessoaService {
     public void deletarPorId(Long id) {
 
         this.pessoaRepository.deleteById(id);
+    }
+
+    @Override
+    public Pessoa atualizar(Long id, Pessoa pessoa) {
+
+        Optional<Pessoa> pessoaSalva = this.pessoaRepository.findById(id);
+
+        if(pessoaSalva.isEmpty()) {
+
+            throw new EmptyResultDataAccessException(1);
+        }
+
+        BeanUtils.copyProperties(pessoa, pessoaSalva.get(), "id");
+        return this.pessoaRepository.save(pessoaSalva.get());
     }
 }

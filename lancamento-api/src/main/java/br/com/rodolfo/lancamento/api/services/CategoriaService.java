@@ -36,4 +36,12 @@ public interface CategoriaService {
      */
     void deletarPorId(Long id);
 
+    /**
+     * Atualiza e retorna a categoria no banco de dados
+     * @param id
+     * @param categoria
+     * @return Categoria
+     */
+    Categoria atualizar(Long id, Categoria categoria);
+
 }

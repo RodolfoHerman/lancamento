@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -83,6 +84,20 @@ public class CategoriaController {
     public void deletarPorId(@PathVariable Long id) {
         
         this.categoriaService.deletarPorId(id);
+    }
+
+    /**
+     * Atualizar uma categoria através do id
+     * @param id
+     * @param categoria
+     * @return ResponseEntity
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody Categoria categoria) {
+
+        Categoria categoriaAtualizada = this.categoriaService.atualizar(id, categoria);
+
+        return ResponseEntity.ok().body(categoriaAtualizada);
     }
 
 }

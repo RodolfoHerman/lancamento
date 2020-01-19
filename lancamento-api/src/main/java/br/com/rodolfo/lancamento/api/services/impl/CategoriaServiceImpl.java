@@ -3,7 +3,9 @@ package br.com.rodolfo.lancamento.api.services.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.models.Categoria;
@@ -41,5 +43,19 @@ public class CategoriaServiceImpl implements CategoriaService {
     public void deletarPorId(Long id) {
 
         this.categoriaRepository.deleteById(id);
+    }
+
+    @Override
+    public Categoria atualizar(Long id, Categoria categoria) {
+
+        Optional<Categoria> categoriaSalva = this.categoriaRepository.findById(id);
+
+        if(categoriaSalva.isEmpty()) {
+
+            throw new EmptyResultDataAccessException(1);
+        }
+
+        BeanUtils.copyProperties(categoria, categoriaSalva.get(), "id");
+        return this.categoriaRepository.save(categoriaSalva.get());
     }
 }

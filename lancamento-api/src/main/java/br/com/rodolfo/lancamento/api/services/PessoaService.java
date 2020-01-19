@@ -24,7 +24,7 @@ public interface PessoaService {
     Optional<Pessoa> listarPorId(Long id);
 
     /**
-     * Cria e retorna a categoria no banco de dados
+     * Cria e retorna a pessoa no banco de dados
      * @param pessoa
      * @return Pessoa
      */
@@ -35,5 +35,13 @@ public interface PessoaService {
      * @param id
      */
     void deletarPorId(Long id);
+
+    /**
+     * Atualiza e retorna a pessoa no banco de dados
+     * @param id
+     * @param pessoa
+     * @return Pessoa
+     */
+    Pessoa atualizar(Long id, Pessoa pessoa);
 
 }

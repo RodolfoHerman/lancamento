@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -84,6 +85,20 @@ public class PessoaController {
     public void deletarPorId(@PathVariable Long id) {
 
         this.pessoaService.deletarPorId(id);
+    }
+
+    /**
+     * Atualizar uma pessoa através do id
+     * @param id
+     * @param pessoa
+     * @return ResponseEntity
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa) {
+
+        Pessoa pessoaAtualizada = this.pessoaService.atualizar(id, pessoa);
+
+        return ResponseEntity.ok().body(pessoaAtualizada);
     }
 
 }
