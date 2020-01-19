@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import br.com.rodolfo.lancamento.api.models.enums.TipoLancamento;
 
@@ -28,27 +30,36 @@ public class Lancamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Size(min = 1, max = 50)
     private String descricao;
 
+    @NotNull
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
 
     @Column(name = "data_pagamento")
     private LocalDate dataPagamento;
 
+    @NotNull
+    @Column(precision = 10, scale = 2)
     private BigDecimal valor;
 
+    @Size(max = 100)
     private String observacao;
 
     @Enumerated(EnumType.STRING)
+    @Size(max = 20)
     private TipoLancamento tipo;
 
     @ManyToOne
     @JoinColumn(name = "id_categoria")
+    @NotNull
     private Categoria categoria;
 
     @ManyToOne
     @JoinColumn(name = "id_pessoa")
+    @NotNull
     private Pessoa pessoa;
     
 

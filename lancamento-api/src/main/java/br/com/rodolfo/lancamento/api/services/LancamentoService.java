@@ -22,5 +22,11 @@ public interface LancamentoService {
      * @return Optional
      */
     Optional<Lancamento> listarPorId(Long id);
-    
+ 
+    /**
+     * Cria e retorna um lançamento no banco de dados
+     * @param lancamento
+     * @return Lancamento
+     */
+    Lancamento criar(Lancamento lancamento);
 }
