@@ -50,5 +50,11 @@ public class LancamentoServiceImpl implements LancamentoService {
 
         return this.lancamentoRepository.save(lancamento);
     }
+
+    @Override
+    public void deletarPorId(Long id) {
+
+        this.lancamentoRepository.deleteById(id);
+    }
     
 }

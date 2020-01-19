@@ -31,4 +31,10 @@ public interface LancamentoService {
      * @return Lancamento
      */
     Lancamento criar(Lancamento lancamento);
+
+    /**
+     * Deleta um lançamento através do id
+     * @param id
+     */
+    void deletarPorId(Long id);
 }
