@@ -49,7 +49,6 @@ public class Lancamento {
     private String observacao;
 
     @Enumerated(EnumType.STRING)
-    @Size(max = 20)
     private TipoLancamento tipo;
 
     @ManyToOne
