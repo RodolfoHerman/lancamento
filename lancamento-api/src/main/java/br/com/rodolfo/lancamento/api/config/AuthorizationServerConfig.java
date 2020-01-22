@@ -26,7 +26,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-        endpoints.tokenStore(tokenStore()).accessTokenConverter(accessTokenConverter())
+        endpoints
+            .tokenStore(tokenStore())
+            .accessTokenConverter(accessTokenConverter())
+            // Sempre qd pedir um novo access token utilizando o refresh token, um novo refresh token será enviado.
+            // Então, enquanto o usuário estiver usando a aplicação todos os dias, o refresh token não irá expirar.
+            // Se não setar para FALSE o refresh token terá o tempo de apenas 24h, necessitando q o usuário logue de novo.
+            .reuseRefreshTokens(false)
             .authenticationManager(authenticationManager);
     }
 
@@ -35,8 +41,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         clients.inMemory()
             .withClient("angular").secret("{noop}@angul@r0") // necessario encodar para tiar o {noop}
             .scopes("read", "write")
-            .authorizedGrantTypes("password")
-            .accessTokenValiditySeconds(1800);
+            .authorizedGrantTypes("password", "refresh_token")
+            .accessTokenValiditySeconds(20)
+            .refreshTokenValiditySeconds(3600 * 24);
     }
 
     @Bean
