@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,9 @@ public class CategoriaController {
      * @return List
      */
     @GetMapping
+    // hasAuthority -> permissão (escopo) do usuário logado.
+    // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
     public List<Categoria> listar() {
 
         return this.categoriaService.listar();
@@ -53,6 +57,7 @@ public class CategoriaController {
      * @return Categoria
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
     public ResponseEntity<?> listarPorId(@PathVariable Long id) {
         
         Optional<Categoria> categoria = this.categoriaService.listarPorId(id);
@@ -66,6 +71,7 @@ public class CategoriaController {
      * @return Categoria
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('wirte')")
     public ResponseEntity<?> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
 
         Categoria categoriaSalva = this.categoriaService.criar(categoria);
