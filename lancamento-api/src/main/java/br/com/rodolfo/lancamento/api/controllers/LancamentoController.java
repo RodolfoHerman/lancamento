@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +45,9 @@ public class LancamentoController {
      * @return Page
      */
     @GetMapping
+    // hasAuthority -> permissão (escopo) do usuário logado.
+    // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 
         return this.lancamentoService.listar(lancamentoFilter, pageable);
@@ -55,6 +59,7 @@ public class LancamentoController {
      * @return ResponseEntity
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
     public ResponseEntity<?> listarPorId(@PathVariable Long id) {
 
         Optional<Lancamento> lancamento = this.lancamentoService.listarPorId(id);
@@ -69,6 +74,7 @@ public class LancamentoController {
      * @return ResponseEntity
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
     public ResponseEntity<?> criar(@Valid @RequestBody Lancamento lancamento, HttpServletResponse response) {
 
         Lancamento lancamentoSalvo = this.lancamentoService.criar(lancamento);
@@ -84,6 +90,7 @@ public class LancamentoController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
     public void deletarPorId(@PathVariable Long id) {
 
         this.lancamentoService.deletarPorId(id);

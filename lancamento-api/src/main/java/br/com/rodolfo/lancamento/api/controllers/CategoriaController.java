@@ -87,6 +87,7 @@ public class CategoriaController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_CATEGORIA') and #oauth2.hasScope('wirte')")
     public void deletarPorId(@PathVariable Long id) {
         
         this.categoriaService.deletarPorId(id);
@@ -99,6 +100,7 @@ public class CategoriaController {
      * @return ResponseEntity
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @Valid @RequestBody Categoria categoria) {
 
         Categoria categoriaAtualizada = this.categoriaService.atualizar(id, categoria);

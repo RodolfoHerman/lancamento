@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,9 @@ public class PessoaController {
      * @return List
      */
     @GetMapping
+    // hasAuthority -> permissão (escopo) do usuário logado.
+    // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public List<Pessoa> listar() {
 
         return this.pessoaService.listar();
@@ -53,6 +57,7 @@ public class PessoaController {
      * @return ResponseEntity
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
     public ResponseEntity<?> listarPorId(@PathVariable Long id) {
 
         Optional<Pessoa> pessoa = this.pessoaService.listarPorId(id);
@@ -67,6 +72,7 @@ public class PessoaController {
      * @return ResponseEntity
      */
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
     public ResponseEntity<?> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
 
         Pessoa pessoaSalva = this.pessoaService.criar(pessoa);
@@ -82,6 +88,7 @@ public class PessoaController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
     public void deletarPorId(@PathVariable Long id) {
 
         this.pessoaService.deletarPorId(id);
