@@ -12,6 +12,7 @@ import br.com.rodolfo.lancamento.api.models.Pessoa;
 import br.com.rodolfo.lancamento.api.repositories.LancamentoRepository;
 import br.com.rodolfo.lancamento.api.repositories.PessoaRepository;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
+import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
 import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
 
@@ -29,13 +30,19 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
-        
+
         return this.lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
     @Override
-    public Optional<Lancamento> listarPorId(Long id) {
+    public Page<LancamentoResumo> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
         
+        return this.lancamentoRepository.resumir(lancamentoFilter, pageable);
+    }
+
+    @Override
+    public Optional<Lancamento> listarPorId(Long id) {
+
         return this.lancamentoRepository.findById(id);
     }
 
@@ -44,7 +51,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
         Optional<Pessoa> pessoa = this.pessoaRepository.findById(lancamento.getPessoa().getId());
 
-        if(pessoa.isEmpty() || pessoa.get().isInativo()) {
+        if (pessoa.isEmpty() || pessoa.get().isInativo()) {
 
             throw new PessoaInativaOuInexistenteException();
         }

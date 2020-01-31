@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.rodolfo.lancamento.api.event.RecursoCriadoEvent;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
+import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
 
 /**
@@ -51,6 +52,20 @@ public class LancamentoController {
     public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 
         return this.lancamentoService.listar(lancamentoFilter, pageable);
+    }
+
+    /**
+     * Lista os lançamentos da base de dados
+     * @param lancamentoFilter
+     * @return Page
+     */
+    @GetMapping(params = "resumo")
+    // hasAuthority -> permissão (escopo) do usuário logado.
+    // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public Page<LancamentoResumo> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+
+        return this.lancamentoService.resumir(lancamentoFilter, pageable);
     }
 
     /**

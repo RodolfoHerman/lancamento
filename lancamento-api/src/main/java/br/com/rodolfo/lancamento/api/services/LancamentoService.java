@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
+import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 
 /**
  * LancamentoService
@@ -40,4 +41,12 @@ public interface LancamentoService {
      * @param id
      */
     void deletarPorId(Long id);
+
+    /**
+     * Busca e retorna uma lista de lançamentos resumisdos
+     * @param lancamentoFilter
+     * @param pageable
+     * @return Page
+     */
+    Page<LancamentoResumo> resumir(LancamentoFilter lancamentoFilter, Pageable pageable);
 }

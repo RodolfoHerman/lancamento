@@ -16,8 +16,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
+import br.com.rodolfo.lancamento.api.models.Categoria;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
+import br.com.rodolfo.lancamento.api.models.Pessoa;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
+import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 
 /**
  * LancamentoRepositoryImpl
@@ -48,6 +51,41 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         return new PageImpl<>(query.getResultList(), pageable, this.total(lancamentoFilter));
     }
 
+    @Override
+    public Page<LancamentoResumo> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+
+        CriteriaBuilder builder = this.manager.getCriteriaBuilder();
+        CriteriaQuery<LancamentoResumo> criteria = builder.createQuery(LancamentoResumo.class);
+        Root<Lancamento> root = criteria.from(Lancamento.class);
+
+        // Path<Categoria> categoriaP = root.<Categoria>get("categoria");
+        // Path<Pessoa> pessoaP = root.<Pessoa>get("pessoa");
+        
+        // https://www.programcreek.com/java-api-examples/?api=javax.persistence.criteria.Path
+        criteria.select(builder.construct(LancamentoResumo.class, 
+            root.get("id"),
+            root.get("descricao"),
+            root.get("dataVencimento"),
+            root.get("dataPagamento"),
+            root.get("valor"),
+            root.get("tipo"),
+            root.<Categoria>get("categoria").get("nome"),
+            root.<Pessoa>get("pessoa").get("nome")
+            // categoriaP.get("nome"),
+            // pessoaP.get("nome")
+        ));
+
+        // Criar as restrições
+        Predicate[] predicates = this.criarRestricoes(lancamentoFilter, builder, root);
+        criteria.where(predicates);
+
+        TypedQuery<LancamentoResumo> query = this.manager.createQuery(criteria);
+
+        this.adicionarRestricoesDePaginacao(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, this.total(lancamentoFilter));
+    }
+
     private Long total(LancamentoFilter lancamentoFilter) {
         
         CriteriaBuilder builder = this.manager.getCriteriaBuilder();
@@ -62,7 +100,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         return this.manager.createQuery(criteria).getSingleResult();
     }
 
-    private void adicionarRestricoesDePaginacao(TypedQuery<Lancamento> query, Pageable pageable) {
+    private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
     
         int paginaAtual = pageable.getPageNumber();
         int totalRegistrosPorPagina = pageable.getPageSize();
