@@ -73,6 +73,13 @@
 			<version>2.1.6.RELEASE</version>
 		</dependency>
 
+		<!-- Para realizar validações na classe br.com.rodolfo.lancamento.api.config.property -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>6.0.16.Final</version>
+		 </dependency>
+
 	</dependencies>
 
 	<build>

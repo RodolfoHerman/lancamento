@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,6 +17,8 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import br.com.rodolfo.lancamento.api.config.property.LancamentoProperty;
+
 /**
  * RefreshTokenPostProcessor OAuth2AccessToken -> é o tipo de dado que será
  * interceptado quando a requisição estiver voltando
@@ -23,6 +26,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
+	@Autowired
+	private LancamentoProperty property;
+	
 	@Override
 	public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         
@@ -59,7 +65,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
         // O Cookie só será acessível através de HTTP
         refreshTokenCookie.setHttpOnly(true);
         // Será um Cookie acessível apenas em HTTPS
-        refreshTokenCookie.setSecure(false); // TODO: Mudar para true em producao
+        refreshTokenCookie.setSecure(this.property.getSeguranca().isEnableHttps());
         // Para qual caminho esse Cookie deve ser enviado pelo browser automaticamente
         refreshTokenCookie.setPath(req.getContextPath() + "/oauth/token");
         // Expiração do Cookie em 30 dias
