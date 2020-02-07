@@ -34,7 +34,7 @@ public class AppUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioOptional
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha iválido(s)!"));
 
-        return new User(email, "{bcrypt}" + usuario.getSenha(), getPermissoes(usuario));
+        return new UsuarioSistema(usuario, getPermissoes(usuario));
     }
 
     private Collection<? extends GrantedAuthority> getPermissoes(Usuario usuario) {
