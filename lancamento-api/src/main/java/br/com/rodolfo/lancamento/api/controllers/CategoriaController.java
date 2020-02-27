@@ -45,7 +45,8 @@ public class CategoriaController {
     @GetMapping
     // hasAuthority -> permissão (escopo) do usuário logado.
     // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
-    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
+    // @PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
+    // https://developer.okta.com/blog/2019/06/20/spring-preauthorize
     public List<Categoria> listar() {
 
         return this.categoriaService.listar();
