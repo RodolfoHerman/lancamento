@@ -1,6 +1,5 @@
 package br.com.rodolfo.lancamento.api.controllers;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,14 +44,14 @@ public class PessoaController {
      * Lista as pessoas da base de dados
      * @return List
      */
-    @GetMapping
+    // @GetMapping
     // hasAuthority -> permissão (escopo) do usuário logado.
     // #oauth2.hasScope -> permissão (escopo) do cliente (Aplicação Angular o Mobile)
-    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-    public List<Pessoa> listar() {
+    // @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+    // public List<Pessoa> listar() {
 
-        return this.pessoaService.listar();
-    }
+    //     return this.pessoaService.listar();
+    // }
 
     /**
      * Lista a pessoa através do id
@@ -118,6 +120,19 @@ public class PessoaController {
     public void atualizarPropriedadeAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
 
         this.pessoaService.atualizarPropriedadeAtivo(id, ativo);
+    }
+
+    /**
+     * Lista as pessoas da base de dados podendo filtrar pelo nome
+     * @param nome
+     * @param pageable
+     * @return Page
+     */
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA')")
+    public Page<Pessoa> pesquisar(@RequestParam(required = false, defaultValue = "") String nome, Pageable pageable) {
+
+        return this.pessoaService.pesquisarPeloNome(nome, pageable);
     }
 
 }

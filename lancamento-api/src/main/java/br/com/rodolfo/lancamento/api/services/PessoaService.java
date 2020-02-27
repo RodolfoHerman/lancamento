@@ -1,7 +1,9 @@
 package br.com.rodolfo.lancamento.api.services;
 
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import br.com.rodolfo.lancamento.api.models.Pessoa;
 
@@ -14,7 +16,7 @@ public interface PessoaService {
      * Busca e retorna uma lista de pessoas
      * @return List
      */
-    List<Pessoa> listar();
+    // List<Pessoa> listar();
 
     /**
      * Busca e retorna uma pessoa através do id
@@ -50,5 +52,13 @@ public interface PessoaService {
      * @param ativo
      */
     void atualizarPropriedadeAtivo(Long id, Boolean ativo);
+
+    /**
+     * Busca e retorna uma lista de pessoas a partir do filtro nome
+     * @param nome
+     * @param pageable
+     * @return Page
+     */
+    Page<Pessoa> pesquisarPeloNome(String nome, Pageable pageable);
 
 }
