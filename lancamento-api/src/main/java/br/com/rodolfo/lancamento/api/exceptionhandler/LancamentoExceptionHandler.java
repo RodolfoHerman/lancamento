@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.rodolfo.lancamento.api.services.exception.LancamentoInexistenteException;
 import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
 
 /**
@@ -92,6 +93,24 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    // LancamentoInexistenteException
+
+    /**
+     * Criação de um método customizado para tratar a exceção LancamentoInexistenteException
+     * Utilizado quando o ID do lançamento é inexistente na base de dados
+     */
+    @ExceptionHandler({ LancamentoInexistenteException.class })
+    public ResponseEntity<Object> handleLancamentoInexistenteException(LancamentoInexistenteException ex, WebRequest request) {
+
+        String mensagemUsuario = this.messageSource.getMessage("lancamento.inexistente", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
+
+        List<LancamentoErro> erros = Arrays.asList(new LancamentoErro(mensagemUsuario, mensagemDesenvolvedor));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+
 
     @ExceptionHandler({ PessoaInativaOuInexistenteException.class })
     public ResponseEntity<Object> handlePessoaInativaOuInexistenteException(PessoaInativaOuInexistenteException ex, WebRequest request) {
@@ -101,7 +120,7 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
 
         List<LancamentoErro> erros = Arrays.asList(new LancamentoErro(mensagemUsuario, mensagemDesenvolvedor));
 
-        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     private List<LancamentoErro> criarListaDeErros(BindingResult bindingResult) {

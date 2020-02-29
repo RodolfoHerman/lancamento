@@ -49,4 +49,12 @@ public interface LancamentoService {
      * @return Page
      */
     Page<LancamentoResumo> resumir(LancamentoFilter lancamentoFilter, Pageable pageable);
+
+    /**
+     * Atualiza um lançamento a partir de seu ID
+     * @param id
+     * @param lancamento
+     * @return Lancamento
+     */
+    Lancamento atualizar(Long id, Lancamento lancamento);
 }
