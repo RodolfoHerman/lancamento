@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
 import br.com.rodolfo.lancamento.api.repositories.LancamentoRepository;
@@ -86,13 +87,24 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Override
     public List<LancamentosEstatisticaCategoriaDTO> porCategoria(String mesReferencia) {
-        
-        if(mesReferencia.equals("")) {
+
+        if (mesReferencia.equals("")) {
 
             return this.lancamentoRepository.porCategoria(LocalDate.now());
         }
 
         return this.lancamentoRepository.porCategoria(LocalDate.parse(mesReferencia, this.DATA_FORMATO_PADRAO));
+    }
+
+    @Override
+    public List<LancamentosEstatisticaDiaDTO> porDia(String mesReferencia) {
+        
+        if(mesReferencia.equals("")) {
+
+            this.lancamentoRepository.porDia(LocalDate.now());
+        }
+
+        return this.lancamentoRepository.porDia(LocalDate.parse(mesReferencia, this.DATA_FORMATO_PADRAO));
     }
 
     /**

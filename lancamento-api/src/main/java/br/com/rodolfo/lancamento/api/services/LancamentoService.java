@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
@@ -66,4 +67,11 @@ public interface LancamentoService {
      * @return List
      */
     public List<LancamentosEstatisticaCategoriaDTO> porCategoria(String mesReferencia);
+
+    /**
+     * Busca e retorna uma lista de LancamentosEstatisticaDiaDTO por dia de referência
+     * @param mesReferencia
+     * @return List
+     */
+    public List<LancamentosEstatisticaDiaDTO> porDia(String mesReferencia);
 }

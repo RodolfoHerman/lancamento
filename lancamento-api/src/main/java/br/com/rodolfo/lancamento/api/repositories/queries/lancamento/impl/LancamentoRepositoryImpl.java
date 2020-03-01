@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
 import br.com.rodolfo.lancamento.api.models.Categoria;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
@@ -95,7 +96,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         Expression<BigDecimal> soma = builder.sum(root.get("valor"));
 
         criteria.select(builder.construct(
-            LancamentosEstatisticaCategoriaDTO.class, 
+            LancamentosEstatisticaCategoriaDTO.class,
             root.<Categoria>get("categoria"),
             // builder.sum(root.get("valor")) <- criou-se a expressão 'soma' por fora para utiliza-la no order by
             soma
@@ -113,6 +114,42 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         criteria.orderBy(builder.asc(soma));
 
         TypedQuery<LancamentosEstatisticaCategoriaDTO> typedQuery = this.manager.createQuery(criteria);
+
+        return typedQuery.getResultList();
+    }
+
+    @Override
+    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate mesReferencia) {
+        
+        CriteriaBuilder builder = this.manager.getCriteriaBuilder();
+        CriteriaQuery<LancamentosEstatisticaDiaDTO> criteria = builder.createQuery(LancamentosEstatisticaDiaDTO.class);
+        Root<Lancamento> root = criteria.from(Lancamento.class);
+
+        Expression<BigDecimal> soma = builder.sum(root.get("valor"));
+
+        criteria.select(builder.construct(
+            LancamentosEstatisticaDiaDTO.class, 
+            root.get("tipo"),
+            root.get("dataVencimento"),
+            // builder.sum(root.get("valor")) <- criou-se a expressão 'soma' por fora para utiliza-la no order by
+            soma
+        ));
+
+        LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
+        LocalDate ultimoDia   = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); 
+
+        criteria.where(
+            builder.greaterThanOrEqualTo(root.get("dataVencimento"), primeiroDia),
+            builder.lessThanOrEqualTo(root.get("dataVencimento"), ultimoDia)
+        );
+
+        criteria.groupBy(
+            root.get("tipo"),
+            root.get("dataVencimento")
+        );
+        criteria.orderBy(builder.asc(soma));
+
+        TypedQuery<LancamentosEstatisticaDiaDTO> typedQuery = this.manager.createQuery(criteria);
 
         return typedQuery.getResultList();
     }
