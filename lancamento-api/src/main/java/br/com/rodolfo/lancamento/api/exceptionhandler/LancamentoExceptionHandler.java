@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.exceptionhandler;
 
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -93,8 +94,6 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-    // LancamentoInexistenteException
-
     /**
      * Criação de um método customizado para tratar a exceção LancamentoInexistenteException
      * Utilizado quando o ID do lançamento é inexistente na base de dados
@@ -110,8 +109,6 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
-
-
     @ExceptionHandler({ PessoaInativaOuInexistenteException.class })
     public ResponseEntity<Object> handlePessoaInativaOuInexistenteException(PessoaInativaOuInexistenteException ex, WebRequest request) {
 
@@ -121,6 +118,17 @@ public class LancamentoExceptionHandler extends ResponseEntityExceptionHandler {
         List<LancamentoErro> erros = Arrays.asList(new LancamentoErro(mensagemUsuario, mensagemDesenvolvedor));
 
         return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({ DateTimeParseException.class })
+    public ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException ex, WebRequest request) {
+
+        String mensagemUsuario = this.messageSource.getMessage("recurso.data-formato-errado", null, LocaleContextHolder.getLocale());
+        String mensagemDesenvolvedor = ex.toString();
+
+        List<LancamentoErro> erros = Arrays.asList(new LancamentoErro(mensagemUsuario, mensagemDesenvolvedor));
+
+        return handleExceptionInternal(ex, erros, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     private List<LancamentoErro> criarListaDeErros(BindingResult bindingResult) {

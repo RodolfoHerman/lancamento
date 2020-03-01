@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
 import br.com.rodolfo.lancamento.api.event.RecursoCriadoEvent;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
@@ -125,6 +128,18 @@ public class LancamentoController {
         Lancamento lancamentoSalvo = this.lancamentoService.atualizar(id, lancamento);
 
         return ResponseEntity.ok().body(lancamentoSalvo);
+    }
+
+    /**
+     * Lista as estatisticas (valor gasto) dos lançamentos agrupados por categoria
+     * @param mesReferencia
+     * @return List
+     */
+    @GetMapping("/estatisticas/por-categoria")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(@RequestParam(required = false, defaultValue = "") String mesReferencia) {
+
+        return this.lancamentoService.porCategoria(mesReferencia);
     }
     
 }

@@ -3,7 +3,8 @@ package br.com.rodolfo.lancamento.api.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.rodolfo.lancamento.api.models.Lancamento;
-import br.com.rodolfo.lancamento.api.repositories.lancamentoquery.LancamentoRepositoryQuery;
+import br.com.rodolfo.lancamento.api.repositories.queries.lancamento.LancamentoRepositoryQuery;
+
 
 /**
  * LancamentoRepository
