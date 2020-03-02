@@ -118,7 +118,7 @@ public class LancamentoServiceImpl implements LancamentoService {
             LocalDate inicioTemp = dataAtual.withDayOfMonth(1);
             LocalDate fimTemp = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth());
 
-            this.lancamentoRepository.porPessoa(inicioTemp, fimTemp);
+            return this.lancamentoRepository.porPessoa(inicioTemp, fimTemp);
         }
 
         LocalDate parseInicio = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);
