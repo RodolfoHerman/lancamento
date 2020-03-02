@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaPessoaDTO;
 import br.com.rodolfo.lancamento.api.event.RecursoCriadoEvent;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
@@ -153,6 +154,19 @@ public class LancamentoController {
     public List<LancamentosEstatisticaDiaDTO> porDia(@RequestParam(required = false, defaultValue = "") String mesReferencia) {
 
         return this.lancamentoService.porDia(mesReferencia);
+    }
+
+    /**
+     * Lista as estatisticas de gastos por tipo de cada pessoa
+     * @param dataInicio
+     * @param dataFim
+     * @return List
+     */
+    @GetMapping("/estatisticas/por-pessoa")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(@RequestParam(required = false, defaultValue = "") String dataInicio, @RequestParam(required = false, defaultValue = "") String dataFim) {
+
+        return this.lancamentoService.porPessoa(dataInicio, dataFim);
     }
     
 }

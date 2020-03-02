@@ -21,6 +21,7 @@ import org.springframework.util.StringUtils;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaPessoaDTO;
 import br.com.rodolfo.lancamento.api.models.Categoria;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
@@ -88,7 +89,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
     @Override
     public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate mesReferencia) {
-        
+
         CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<LancamentosEstatisticaCategoriaDTO> criteria = builder.createQuery(LancamentosEstatisticaCategoriaDTO.class);
         Root<Lancamento> root = criteria.from(Lancamento.class);
@@ -120,7 +121,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
     @Override
     public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate mesReferencia) {
-        
+
         CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<LancamentosEstatisticaDiaDTO> criteria = builder.createQuery(LancamentosEstatisticaDiaDTO.class);
         Root<Lancamento> root = criteria.from(Lancamento.class);
@@ -150,6 +151,38 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
         criteria.orderBy(builder.asc(soma));
 
         TypedQuery<LancamentosEstatisticaDiaDTO> typedQuery = this.manager.createQuery(criteria);
+
+        return typedQuery.getResultList();
+    }
+
+    @Override
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(LocalDate inicio, LocalDate fim) {
+        
+        CriteriaBuilder builder = this.manager.getCriteriaBuilder();
+        CriteriaQuery<LancamentosEstatisticaPessoaDTO> criteria = builder.createQuery(LancamentosEstatisticaPessoaDTO.class);
+        Root<Lancamento> root = criteria.from(Lancamento.class);
+
+        Expression<BigDecimal> soma = builder.sum(root.get("valor"));
+
+        criteria.select(builder.construct(
+            LancamentosEstatisticaPessoaDTO.class, 
+            root.get("tipo"), 
+            root.get("pessoa"),
+            soma
+        ));
+
+        criteria.where(
+            builder.greaterThanOrEqualTo(root.get("dataVencimento"), inicio),
+            builder.lessThanOrEqualTo(root.get("dataVencimento"), fim)
+        );
+
+        criteria.groupBy(
+            root.get("tipo"), 
+            root.get("pessoa")
+        );
+        criteria.orderBy(builder.asc(soma));
+
+        TypedQuery<LancamentosEstatisticaPessoaDTO> typedQuery = this.manager.createQuery(criteria);
 
         return typedQuery.getResultList();
     }

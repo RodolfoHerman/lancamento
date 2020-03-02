@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
+import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaPessoaDTO;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
 import br.com.rodolfo.lancamento.api.repositories.LancamentoRepository;
@@ -105,6 +106,25 @@ public class LancamentoServiceImpl implements LancamentoService {
         }
 
         return this.lancamentoRepository.porDia(LocalDate.parse(mesReferencia, this.DATA_FORMATO_PADRAO));
+    }
+
+    @Override
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(String inicio, String fim) {
+        
+        if(inicio.equals("") || fim.equals("")) {
+
+            LocalDate dataAtual = LocalDate.now();
+
+            LocalDate inicioTemp = dataAtual.withDayOfMonth(1);
+            LocalDate fimTemp = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth());
+
+            this.lancamentoRepository.porPessoa(inicioTemp, fimTemp);
+        }
+
+        LocalDate parseInicio = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);
+        LocalDate parseFim = LocalDate.parse(fim, this.DATA_FORMATO_PADRAO);
+
+        return this.lancamentoRepository.porPessoa(parseInicio, parseFim);
     }
 
     /**
