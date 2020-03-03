@@ -3,7 +3,6 @@ package br.com.rodolfo.lancamento.api.services.impl;
 import java.io.InputStream;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +45,7 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     @Autowired
     private PessoaRepository pessoaRepository;
-
-    private final DateTimeFormatter DATA_FORMATO_PADRAO = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
 
     @Override
     public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
@@ -98,40 +96,36 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     @Override
-    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(String mesReferencia) {
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate data) {
 
-        List<LocalDate> dias = this.validarData(mesReferencia, mesReferencia, true);
+        List<LocalDate> dias = this.getDatas(data);
 
         return this.lancamentoRepository.porCategoria(dias.get(0), dias.get(1));
     }
 
     @Override
-    public List<LancamentosEstatisticaDiaDTO> porDia(String mesReferencia) {
+    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate data) {
 
-        List<LocalDate> dias = this.validarData(mesReferencia, mesReferencia, true);
+        List<LocalDate> dias = this.getDatas(data);
 
         return this.lancamentoRepository.porDia(dias.get(0), dias.get(1));
     }
 
     @Override
-    public List<LancamentosEstatisticaPessoaDTO> porPessoa(String inicio, String fim) {
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(LocalDate dataInicio, LocalDate dataFim) {
 
-        List<LocalDate> dias = this.validarData(inicio, fim, false);
-
-        return this.lancamentoRepository.porPessoa(dias.get(0), dias.get(1));
+        return this.lancamentoRepository.porPessoa(dataInicio, dataFim);
     }
 
     @Override
-    public byte[] relatorioPorPessoa(String inicio, String fim) throws JRException {
+    public byte[] relatorioPorPessoa(LocalDate dataInicio, LocalDate dataFim) throws JRException {
 
-        List<LocalDate> dias = this.validarData(inicio, fim, false);
-
-        List<LancamentosEstatisticaPessoaDTO> dados = this.lancamentoRepository.porPessoa(dias.get(0), dias.get(1));
+        List<LancamentosEstatisticaPessoaDTO> dados = this.lancamentoRepository.porPessoa(dataInicio, dataFim);
 
         Map<String,Object> parametros = new HashMap<>();
 
-        parametros.put("DT_INICIO", Date.valueOf(dias.get(0)));
-        parametros.put("DT_FIM", Date.valueOf(dias.get(1)));
+        parametros.put("DT_INICIO", Date.valueOf(dataInicio));
+        parametros.put("DT_FIM", Date.valueOf(dataFim));
         parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
 
         InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper");
@@ -144,31 +138,13 @@ public class LancamentoServiceImpl implements LancamentoService {
     }
 
     /**
-     * Verifica e retorna a data para passar por parâmetro
-     * @param inicio
-     * @param fim
-     * @return List
+     * Retorna o período do início do mês até o último dia
+     * @param data
+     * @return
      */
-    private List<LocalDate> validarData(String inicio, String fim, boolean mes) {
+    private List<LocalDate> getDatas(LocalDate data) {
         
-        if(inicio.equals("") || fim.equals("")) {
-
-            LocalDate data = LocalDate.now();
-
-            return Arrays.asList(data.withDayOfMonth(1), data.withDayOfMonth(data.lengthOfMonth()));
-        }
-
-        if(mes) {
-
-            LocalDate data = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);;
-
-            return Arrays.asList(data.withDayOfMonth(1), data.withDayOfMonth(data.lengthOfMonth()));
-        }
-
-        LocalDate data1 = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);
-        LocalDate data2 = LocalDate.parse(fim, this.DATA_FORMATO_PADRAO);
-
-        return Arrays.asList(data1, data2);
+        return Arrays.asList(data.withDayOfMonth(1), data.withDayOfMonth(data.lengthOfMonth()));
     }
 
     /**

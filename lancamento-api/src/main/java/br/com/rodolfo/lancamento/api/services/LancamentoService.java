@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,32 +66,32 @@ public interface LancamentoService {
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaCategoriaDTO por mês de referência
-     * @param mesReferencia
+     * @param data
      * @return List
      */
-    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(String mesReferencia);
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate data);
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaDiaDTO por dia de referência
-     * @param mesReferencia
+     * @param data
      * @return List
      */
-    public List<LancamentosEstatisticaDiaDTO> porDia(String mesReferencia);
+    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate data);
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaPessoaDTO pelo intervalo informado
-     * @param inicio
-     * @param fim
+     * @param dataInicio
+     * @param dataFim
      * @return List
      */
-    public List<LancamentosEstatisticaPessoaDTO> porPessoa(String inicio, String fim);
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(LocalDate dataInicio, LocalDate dataFim);
 
     /**
      * Retorna os bytes do relatório em PDF
-     * @param inicio
-     * @param fim
+     * @param dataInicio
+     * @param dataFim
      * @return byte[]
      * @throws JRException
      */
-    public byte[] relatorioPorPessoa(String inicio, String fim) throws JRException;
+    public byte[] relatorioPorPessoa(LocalDate dataInicio, LocalDate dataFim) throws JRException;
 }

@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -137,26 +139,26 @@ public class LancamentoController {
 
     /**
      * Lista as estatisticas (valor gasto) dos lançamentos agrupados por categoria
-     * @param mesReferencia
+     * @param data
      * @return List
      */
     @GetMapping("/estatisticas/por-categoria")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
-    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(@RequestParam(required = false, defaultValue = "") String mesReferencia) {
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data) {
 
-        return this.lancamentoService.porCategoria(mesReferencia);
+        return this.lancamentoService.porCategoria(data);
     }
 
     /**
      * Lista as estatisticas (valor gasto) dos lançamentos agrupados por tipo e dia
-     * @param mesReferencia
+     * @param data
      * @return List
      */
     @GetMapping("/estatisticas/por-dia")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
-    public List<LancamentosEstatisticaDiaDTO> porDia(@RequestParam(required = false, defaultValue = "") String mesReferencia) {
+    public List<LancamentosEstatisticaDiaDTO> porDia(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate data) {
 
-        return this.lancamentoService.porDia(mesReferencia);
+        return this.lancamentoService.porDia(data);
     }
 
     /**
@@ -167,7 +169,7 @@ public class LancamentoController {
      */
     @GetMapping("/estatisticas/por-pessoa")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
-    public List<LancamentosEstatisticaPessoaDTO> porPessoa(@RequestParam(required = false, defaultValue = "") String dataInicio, @RequestParam(required = false, defaultValue = "") String dataFim) {
+    public List<LancamentosEstatisticaPessoaDTO> porPessoa(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicio, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFim) {
 
         return this.lancamentoService.porPessoa(dataInicio, dataFim);
     }
@@ -175,7 +177,7 @@ public class LancamentoController {
 
     @GetMapping("/relatorios/por-pessoa")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
-    public ResponseEntity<byte[]> relatorioProPessoa(@RequestParam(required = false, defaultValue = "") String dataInicio, @RequestParam(required = false, defaultValue = "") String dataFim) throws JRException {
+    public ResponseEntity<byte[]> relatorioProPessoa(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicio, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFim) throws JRException {
 
         byte[] relatorio = this.lancamentoService.relatorioPorPessoa(dataInicio, dataFim);
 
