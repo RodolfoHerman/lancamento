@@ -17,6 +17,7 @@ public class LancamentoProperty {
 
     private final Seguranca seguranca = new Seguranca();
     private final Host host = new Host();
+    private final Mail mail = new Mail();
 
     public Seguranca getSeguranca() {
 
@@ -26,6 +27,11 @@ public class LancamentoProperty {
     public Host getHost() {
 
         return this.host;
+    }
+
+    public Mail getMail() {
+
+        return this.mail;
     }
 
     // Criar classe para separar os temas. Ex.: tudo a respeito de segurança 
@@ -60,6 +66,60 @@ public class LancamentoProperty {
 
             this.originPermitida = originPermitida;
         }
+
+    }
+
+    public static class Mail {
+
+        private String host;
+
+        private Integer port;
+
+        private String username;
+
+        private String password;
+
+        
+        public String getHost() {
+
+            return this.host;
+        }
+
+        public void setHost(String host) {
+
+            this.host = host;
+        }
+
+        public Integer getPort() {
+
+            return this.port;
+        }
+
+        public void setPort(Integer port) {
+
+            this.port = port;
+        }
+
+        public String getUsername() {
+
+            return this.username;
+        }
+
+        public void setUsername(String username) {
+
+            this.username = username;
+        }
+
+        public String getPassword() {
+
+            return this.password;
+        }
+
+        public void setPassword(String password) {
+
+            this.password = password;
+        }
+
 
     }
 }
