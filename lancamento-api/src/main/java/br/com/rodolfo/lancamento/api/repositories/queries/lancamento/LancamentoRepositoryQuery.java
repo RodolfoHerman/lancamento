@@ -36,17 +36,19 @@ public interface LancamentoRepositoryQuery {
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaCategoriaDTO por mês de referência
-     * @param mesReferencia
+     * @param inicio
+     * @param fim
      * @return List
      */
-    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate mesReferencia);
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate inicio, LocalDate fim);
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaDiaDTO por dia de referência
-     * @param mesReferencia
+     * @param inicio
+     * @param fim
      * @return List
      */
-    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate mesReferencia);
+    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate inicio, LocalDate fim);
 
     /**
      * Busca e retorna uma lista de LancamentosEstatisticaPessoaDTO pelo intervalo informado

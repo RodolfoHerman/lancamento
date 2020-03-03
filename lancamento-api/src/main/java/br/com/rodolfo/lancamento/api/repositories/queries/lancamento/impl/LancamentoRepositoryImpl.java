@@ -88,7 +88,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
     }
 
     @Override
-    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate mesReferencia) {
+    public List<LancamentosEstatisticaCategoriaDTO> porCategoria(LocalDate inicio, LocalDate fim) {
 
         CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<LancamentosEstatisticaCategoriaDTO> criteria = builder.createQuery(LancamentosEstatisticaCategoriaDTO.class);
@@ -103,12 +103,9 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
             soma
         ));
 
-        LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
-        LocalDate ultimoDia   = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); 
-
         criteria.where(
-            builder.greaterThanOrEqualTo(root.get("dataVencimento"), primeiroDia),
-            builder.lessThanOrEqualTo(root.get("dataVencimento"), ultimoDia)
+            builder.greaterThanOrEqualTo(root.get("dataVencimento"), inicio),
+            builder.lessThanOrEqualTo(root.get("dataVencimento"), fim)
         );
 
         criteria.groupBy(root.<Categoria>get("categoria"));
@@ -120,7 +117,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
     }
 
     @Override
-    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate mesReferencia) {
+    public List<LancamentosEstatisticaDiaDTO> porDia(LocalDate inicio, LocalDate fim) {
 
         CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         CriteriaQuery<LancamentosEstatisticaDiaDTO> criteria = builder.createQuery(LancamentosEstatisticaDiaDTO.class);
@@ -136,12 +133,9 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
             soma
         ));
 
-        LocalDate primeiroDia = mesReferencia.withDayOfMonth(1);
-        LocalDate ultimoDia   = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); 
-
         criteria.where(
-            builder.greaterThanOrEqualTo(root.get("dataVencimento"), primeiroDia),
-            builder.lessThanOrEqualTo(root.get("dataVencimento"), ultimoDia)
+            builder.greaterThanOrEqualTo(root.get("dataVencimento"), inicio),
+            builder.lessThanOrEqualTo(root.get("dataVencimento"), fim)
         );
 
         criteria.groupBy(

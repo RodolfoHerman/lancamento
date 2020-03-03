@@ -1,8 +1,14 @@
 package br.com.rodolfo.lancamento.api.services.impl;
 
+import java.io.InputStream;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
@@ -23,6 +29,11 @@ import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
 import br.com.rodolfo.lancamento.api.services.exception.LancamentoInexistenteException;
 import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 /**
  * LancamentoServiceImpl
@@ -89,42 +100,75 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Override
     public List<LancamentosEstatisticaCategoriaDTO> porCategoria(String mesReferencia) {
 
-        if (mesReferencia.equals("")) {
+        List<LocalDate> dias = this.validarData(mesReferencia, mesReferencia, true);
 
-            return this.lancamentoRepository.porCategoria(LocalDate.now());
-        }
-
-        return this.lancamentoRepository.porCategoria(LocalDate.parse(mesReferencia, this.DATA_FORMATO_PADRAO));
+        return this.lancamentoRepository.porCategoria(dias.get(0), dias.get(1));
     }
 
     @Override
     public List<LancamentosEstatisticaDiaDTO> porDia(String mesReferencia) {
-        
-        if(mesReferencia.equals("")) {
 
-            this.lancamentoRepository.porDia(LocalDate.now());
-        }
+        List<LocalDate> dias = this.validarData(mesReferencia, mesReferencia, true);
 
-        return this.lancamentoRepository.porDia(LocalDate.parse(mesReferencia, this.DATA_FORMATO_PADRAO));
+        return this.lancamentoRepository.porDia(dias.get(0), dias.get(1));
     }
 
     @Override
     public List<LancamentosEstatisticaPessoaDTO> porPessoa(String inicio, String fim) {
+
+        List<LocalDate> dias = this.validarData(inicio, fim, false);
+
+        return this.lancamentoRepository.porPessoa(dias.get(0), dias.get(1));
+    }
+
+    @Override
+    public byte[] relatorioPorPessoa(String inicio, String fim) throws JRException {
+
+        List<LocalDate> dias = this.validarData(inicio, fim, false);
+
+        List<LancamentosEstatisticaPessoaDTO> dados = this.lancamentoRepository.porPessoa(dias.get(0), dias.get(1));
+
+        Map<String,Object> parametros = new HashMap<>();
+
+        parametros.put("DT_INICIO", Date.valueOf(dias.get(0)));
+        parametros.put("DT_FIM", Date.valueOf(dias.get(1)));
+        parametros.put("REPORT_LOCALE", new Locale("pt", "BR"));
+
+        InputStream inputStream = this.getClass().getResourceAsStream("/relatorios/lancamentos-por-pessoa.jasper");
+
+        JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream, parametros,
+            new JRBeanCollectionDataSource(dados)
+        );
+
+        return JasperExportManager.exportReportToPdf(jasperPrint);
+    }
+
+    /**
+     * Verifica e retorna a data para passar por parâmetro
+     * @param inicio
+     * @param fim
+     * @return List
+     */
+    private List<LocalDate> validarData(String inicio, String fim, boolean mes) {
         
         if(inicio.equals("") || fim.equals("")) {
 
-            LocalDate dataAtual = LocalDate.now();
+            LocalDate data = LocalDate.now();
 
-            LocalDate inicioTemp = dataAtual.withDayOfMonth(1);
-            LocalDate fimTemp = dataAtual.withDayOfMonth(dataAtual.lengthOfMonth());
-
-            return this.lancamentoRepository.porPessoa(inicioTemp, fimTemp);
+            return Arrays.asList(data.withDayOfMonth(1), data.withDayOfMonth(data.lengthOfMonth()));
         }
 
-        LocalDate parseInicio = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);
-        LocalDate parseFim = LocalDate.parse(fim, this.DATA_FORMATO_PADRAO);
+        if(mes) {
 
-        return this.lancamentoRepository.porPessoa(parseInicio, parseFim);
+            LocalDate data = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);;
+
+            return Arrays.asList(data.withDayOfMonth(1), data.withDayOfMonth(data.lengthOfMonth()));
+        }
+
+        LocalDate data1 = LocalDate.parse(inicio, this.DATA_FORMATO_PADRAO);
+        LocalDate data2 = LocalDate.parse(fim, this.DATA_FORMATO_PADRAO);
+
+        return Arrays.asList(data1, data2);
     }
 
     /**

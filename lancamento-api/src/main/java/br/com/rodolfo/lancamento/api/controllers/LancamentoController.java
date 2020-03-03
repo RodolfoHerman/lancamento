@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +34,7 @@ import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  * LancamentoController
@@ -167,6 +170,16 @@ public class LancamentoController {
     public List<LancamentosEstatisticaPessoaDTO> porPessoa(@RequestParam(required = false, defaultValue = "") String dataInicio, @RequestParam(required = false, defaultValue = "") String dataFim) {
 
         return this.lancamentoService.porPessoa(dataInicio, dataFim);
+    }
+
+
+    @GetMapping("/relatorios/por-pessoa")
+    @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+    public ResponseEntity<byte[]> relatorioProPessoa(@RequestParam(required = false, defaultValue = "") String dataInicio, @RequestParam(required = false, defaultValue = "") String dataFim) throws JRException {
+
+        byte[] relatorio = this.lancamentoService.relatorioPorPessoa(dataInicio, dataFim);
+
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE).body(relatorio);
     }
     
 }

@@ -12,6 +12,7 @@ import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaPessoaDTO;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  * LancamentoService
@@ -83,4 +84,13 @@ public interface LancamentoService {
      * @return List
      */
     public List<LancamentosEstatisticaPessoaDTO> porPessoa(String inicio, String fim);
+
+    /**
+     * Retorna os bytes do relatório em PDF
+     * @param inicio
+     * @param fim
+     * @return byte[]
+     * @throws JRException
+     */
+    public byte[] relatorioPorPessoa(String inicio, String fim) throws JRException;
 }
