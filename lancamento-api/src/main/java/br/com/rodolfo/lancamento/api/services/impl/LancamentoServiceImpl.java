@@ -19,13 +19,16 @@ import org.springframework.stereotype.Service;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaDiaDTO;
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaPessoaDTO;
+import br.com.rodolfo.lancamento.api.mail.Mailer;
 import br.com.rodolfo.lancamento.api.models.Lancamento;
 import br.com.rodolfo.lancamento.api.models.Pessoa;
+import br.com.rodolfo.lancamento.api.models.Usuario;
 import br.com.rodolfo.lancamento.api.repositories.LancamentoRepository;
 import br.com.rodolfo.lancamento.api.repositories.PessoaRepository;
 import br.com.rodolfo.lancamento.api.repositories.filters.LancamentoFilter;
 import br.com.rodolfo.lancamento.api.repositories.projections.LancamentoResumo;
 import br.com.rodolfo.lancamento.api.services.LancamentoService;
+import br.com.rodolfo.lancamento.api.services.UsuarioService;
 import br.com.rodolfo.lancamento.api.services.exception.LancamentoInexistenteException;
 import br.com.rodolfo.lancamento.api.services.exception.PessoaInativaOuInexistenteException;
 import net.sf.jasperreports.engine.JRException;
@@ -40,12 +43,19 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
 
+    private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+    
     @Autowired
     private LancamentoRepository lancamentoRepository;
 
     @Autowired
     private PessoaRepository pessoaRepository;
     
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private Mailer mailer;
 
     @Override
     public Page<Lancamento> listar(LancamentoFilter lancamentoFilter, Pageable pageable) {
@@ -135,6 +145,16 @@ public class LancamentoServiceImpl implements LancamentoService {
         );
 
         return JasperExportManager.exportReportToPdf(jasperPrint);
+    }
+
+    @Override
+    public void avisarSobreLancamentosVencidos() {
+
+        List<Lancamento> vencidos = this.lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+
+        List<Usuario> destinatarios = this.usuarioService.buscarPelaDescricaoDaPermissaoDoUsuario(DESTINATARIOS);
+
+        this.mailer.avisarSoberLancamentosVencidos(vencidos, destinatarios);
     }
 
     /**

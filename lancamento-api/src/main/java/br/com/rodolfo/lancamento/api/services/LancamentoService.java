@@ -94,4 +94,9 @@ public interface LancamentoService {
      * @throws JRException
      */
     public byte[] relatorioPorPessoa(LocalDate dataInicio, LocalDate dataFim) throws JRException;
+
+    /**
+     * Método que verifica e avisa sobre os lançamentos vencidos
+     */
+    public void avisarSobreLancamentosVencidos();
 }

@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.com.rodolfo.lancamento.api.models.enums.TipoLancamento;
 
 /**
@@ -61,6 +63,11 @@ public class Lancamento {
     @NotNull
     private Pessoa pessoa;
     
+    @JsonIgnore
+    public boolean isReceita() {
+
+        return TipoLancamento.RECEITA.equals(this.tipo);
+    }
 
     public Long getId() {
         return this.id;

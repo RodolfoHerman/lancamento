@@ -1,5 +1,6 @@
 package br.com.rodolfo.lancamento.api.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public Optional<Usuario> buscarPorEmail(String email) {
-        
+
         return this.usuarioRepository.findByEmail(email);
     }
 
+    @Override
+    public List<Usuario> buscarPelaDescricaoDaPermissaoDoUsuario(String permissaoDescricao) {
+        
+        return this.usuarioRepository.findByPermissoesDescricao(permissaoDescricao);
+    }
+
+    
 }
