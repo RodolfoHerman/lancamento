@@ -37,6 +37,8 @@ public class PessoaServiceImpl implements PessoaService {
     @Override
     public Pessoa criar(Pessoa pessoa) {
 
+        pessoa.getContatos().forEach(contato -> contato.setPessoa(pessoa));
+
         return this.pessoaRepository.save(pessoa);
     }
 
@@ -50,8 +52,15 @@ public class PessoaServiceImpl implements PessoaService {
     public Pessoa atualizar(Long id, Pessoa pessoa) {
 
         Pessoa pessoaSalva = this.buscarPessoaPeloId(id);
+        
+        // Necessário devido a propriedade orphan em Pessoa.java
+        pessoaSalva.getContatos().clear();
+        pessoaSalva.getContatos().addAll(pessoa.getContatos());
+        pessoaSalva.getContatos().forEach(contato -> contato.setPessoa(pessoaSalva));
+        
+        // Ignorar a cópia da propriedade contatos, pois foi feita sua atualização nos trechos de código acima
+        BeanUtils.copyProperties(pessoa, pessoaSalva, "id", "contatos");
 
-        BeanUtils.copyProperties(pessoa, pessoaSalva, "id");
         return this.pessoaRepository.save(pessoaSalva);
     }
 

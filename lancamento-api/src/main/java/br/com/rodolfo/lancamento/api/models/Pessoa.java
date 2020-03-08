@@ -1,18 +1,24 @@
 package br.com.rodolfo.lancamento.api.models;
 
 import java.beans.Transient;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Pessoa
@@ -35,6 +41,12 @@ public class Pessoa {
     @Embedded
     private Endereco endereco;
     
+    @JsonIgnoreProperties("pessoa")
+    @Valid
+    // orphanRemoval avisa para o hibernate deletar da base de dados tudo o que não estiver na lista 'contatos'
+    // Ex.: quando a entidade pessoa é atualizada e removidos seus contatos no front e passa pro back
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Contato> contatos = new ArrayList<>();
 
     public Long getId() {
         return this.id;
@@ -72,6 +84,14 @@ public class Pessoa {
 
     public void setEndereco(Endereco endereco) {
         this.endereco = endereco;
+    }
+
+    public List<Contato> getContatos() {
+        return this.contatos;
+    }
+
+    public void setContatos(List<Contato> contatos) {
+        this.contatos = contatos;
     }
 
     @Override

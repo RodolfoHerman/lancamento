@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import br.com.rodolfo.lancamento.api.models.enums.TipoLancamento;
 
@@ -59,6 +60,8 @@ public class Lancamento {
     @NotNull
     private Categoria categoria;
 
+    // Ignorar a propriedade contatos de pessoa (diminuir o tamnho do JSON)
+    @JsonIgnoreProperties("contatos")
     @ManyToOne
     @JoinColumn(name = "id_pessoa")
     @NotNull
