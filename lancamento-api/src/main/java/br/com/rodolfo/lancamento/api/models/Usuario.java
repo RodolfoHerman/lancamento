@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Usuario
  */
@@ -36,6 +38,7 @@ public class Usuario {
     @Size(max = 255)
     private String senha;
 
+    @JsonIgnoreProperties("usuarios")
     // EAGER -> toda vez que busca o usuário já traz junto as suas permissões
     @ManyToMany(fetch = FetchType.EAGER)
     // joinColumns -> quais as colunas que estão associdas da tabela de relacionamento 'usuario_permissao' com a tabela 'usuario'
