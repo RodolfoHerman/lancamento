@@ -72,8 +72,7 @@ public class Mailer {
         Map<String,Object> variaveis = new HashMap<>();
         variaveis.put("lancamentos", vencidos);
 
-        // List<String> emails = destinatarios.stream().map(usuario -> usuario.getEmail()).collect(Collectors.toList());
-        List<String> emails = Arrays.asList("ciencia.rodolfo@gmail.com");
+        List<String> emails = destinatarios.stream().map(usuario -> usuario.getEmail()).collect(Collectors.toList());
 
         // Local do template em resources
         String template = "mail/aviso-lancamentos-vencidos";
