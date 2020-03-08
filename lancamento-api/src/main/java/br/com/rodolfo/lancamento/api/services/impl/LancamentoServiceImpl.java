@@ -10,10 +10,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import br.com.rodolfo.lancamento.api.dto.LancamentosEstatisticaCategoriaDTO;
@@ -44,6 +47,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class LancamentoServiceImpl implements LancamentoService {
 
     private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+
+    private static final Logger logger = LoggerFactory.getLogger(LancamentoServiceImpl.class);
     
     @Autowired
     private LancamentoRepository lancamentoRepository;
@@ -147,14 +152,40 @@ public class LancamentoServiceImpl implements LancamentoService {
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }
 
+    // Job comentado e desabilitado para enviar e-mails (para habilitar basta descomentar qualquer um dos Scheduled)
+    // @Scheduled(cron = "0 0 6 * * *")
+    // @Scheduled(fixedDelay = 1000 * 60 * 30)
     @Override
     public void avisarSobreLancamentosVencidos() {
 
+        if(logger.isDebugEnabled()) {
+
+            logger.debug("Preparando envio de e-mails de aviso de lançamentos vencidos.");
+        }
+
         List<Lancamento> vencidos = this.lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+
+        if(vencidos.isEmpty()) {
+
+            logger.info("Sem lançamentos vencidos para aviso.");
+
+            return;
+        }
+
+        logger.info("Existem {} lançamentos vencidos.", vencidos.size());
 
         List<Usuario> destinatarios = this.usuarioService.buscarPelaDescricaoDaPermissaoDoUsuario(DESTINATARIOS);
 
+        if(destinatarios.isEmpty()) {
+
+            logger.warn("Existem lançamentos vencidos, mas o sistema não encontrou destinatários.");
+
+            return;
+        }
+
         this.mailer.avisarSoberLancamentosVencidos(vencidos, destinatarios);
+
+        logger.info("Envio de e-mail de aviso concluído.");
     }
 
     /**
