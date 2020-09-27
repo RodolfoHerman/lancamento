@@ -49,6 +49,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         http.authorizeRequests()
                 // As requisições para categorias não precisa estar autenticado
                 .antMatchers("/categorias").permitAll()
+                .antMatchers("/usuarios/**").permitAll()
                 // O resto das requisições necessita estar autenticado
                 .anyRequest().authenticated().and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()

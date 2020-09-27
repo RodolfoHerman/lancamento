@@ -174,14 +174,20 @@ public class LancamentoController {
         return this.lancamentoService.porPessoa(dataInicio, dataFim);
     }
 
-
+    /**
+     * Método que retorna o relátorio (PDF) por pessoa a partir do filtro de data
+     * @param dataInicio
+     * @param dataFim
+     * @return ResponseEntity
+     * @throws JRException
+     */
     @GetMapping("/relatorios/por-pessoa")
     @PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
-    public ResponseEntity<byte[]> relatorioProPessoa(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicio, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFim) throws JRException {
+    public ResponseEntity<byte[]> relatorioPorPessoa(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataInicio, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dataFim) throws JRException {
 
         byte[] relatorio = this.lancamentoService.relatorioPorPessoa(dataInicio, dataFim);
 
         return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE).body(relatorio);
     }
-    
+
 }
